@@ -23,6 +23,11 @@ export default function Home(){
 
 	}
 	return (
-	<div>Task</div>
+	<div className='row my-5'>
+	  <div className="col-md-9 card">
+	  <div></div>
+	  </div>
+		
+	</div>
 	)
 }
