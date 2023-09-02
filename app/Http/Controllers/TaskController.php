@@ -17,7 +17,7 @@ class TaskController extends Controller
     public function index()
     {
         //
-        return Task::with("category")->paginate(10);
+        return Task::with("category")->paginate(6);
     }
 
     /**
