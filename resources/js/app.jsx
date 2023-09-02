@@ -1,4 +1,5 @@
 import './bootstrap';
+import axios from 'axios';
 
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes , Route } from "react-router-dom";
