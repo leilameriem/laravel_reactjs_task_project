@@ -29,7 +29,29 @@ export default function Home(){
         }
 
     }
-    // {done} 
+//7
+   const renderPagination=()=>(
+       
+    <ul className="pagination">
+       {
+        tasks.links?.map((link,index)=>(
+            <li key={index} className="page-ite">
+            <a href="" className={`page-link ${link.active ? 'active' : ''}`}>
+            {link.label.replace('&laquo;','').replace('&raquo;','')}
+            </a>
+            </li>
+                 
+                    ))
+       }     
+    </ul>
+       
+
+      
+   )
+
+
+
+    //6 {done} 
 
     const checkIfTaskIsDone=(done)=>(
         done ? (
@@ -83,6 +105,13 @@ export default function Home(){
                             }
                         </tbody>
                     </table>
+                          <div className="my-4 d-flex justify-content-between">
+                        <div>
+                        </div>
+                        <div>
+                            {renderPagination()}
+                        </div>
+                    </div>
 	  
 	  </div>
 		
