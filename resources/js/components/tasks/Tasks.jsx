@@ -8,17 +8,23 @@ export default function Home(){
 	//1
     const [tasks, setTasks] = useState([]); 
     const [categories, setCategories] = useState([]);
+    //7
+    const [page, setPage] = useState(1); 
+
+
 
     //3
     useEffect(() => {
             fetchTasks();  
-    }, [])
+    }, [page])
 
     //2
 	const fetchTasks = async ()=>{
         try{
     //4 get route 
-            const response = await axios.get('/api/tasks');
+     //       const response = await axios.get('/api/tasks');
+     //7-1
+           const response = await axios.get(`/api/tasks?page=${page}`);
     //5 remplir list array tast
     setTasks(response.data);
             console.log(tasks.length);
@@ -29,6 +35,12 @@ export default function Home(){
         }
 
     }
+    // 8
+
+   const fetchPrevNextTasks=(link)=>{
+    const url = new URL(link);
+   setPage(url.searchParams.get('page'));
+   }
 //7
    const renderPagination=()=>(
        
@@ -36,18 +48,20 @@ export default function Home(){
        {
         tasks.links?.map((link,index)=>(
             <li key={index} className="page-ite">
-            <a href="" className={`page-link ${link.active ? 'active' : ''}`}>
+            <a 
+             style={{cursor:'pointer'}}
+            //8
+             onClick={()=>fetchPrevNextTasks(link.url)}
+             className={`page-link ${link.active ? 'active' : ''}`}
+             >
             {link.label.replace('&laquo;','').replace('&raquo;','')}
             </a>
             </li>
-                 
-                    ))
+           ))
        }     
-    </ul>
-       
-
-      
+    </ul>    
    )
+   
 
 
 
@@ -105,8 +119,10 @@ export default function Home(){
                             }
                         </tbody>
                     </table>
-                          <div className="my-4 d-flex justify-content-between">
+                       {/* pagination 7-8*/}  
+                        <div className="my-4 d-flex justify-content-between">
                         <div>
+                        Showing {tasks.from || 0} to {tasks.from || 0} from {tasks.total} results.
                         </div>
                         <div>
                             {renderPagination()}
