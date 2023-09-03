@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import useCategories from '../../custom/useCategories';
 
 
 
@@ -15,7 +16,14 @@ export default function Home(){
 
     //3
     useEffect(() => {
-            fetchTasks();  
+           
+   //pour eviter la repitition 
+   if(!categories.length){
+    fetchCategories(); 
+   }
+    if(!tasks.length){
+     fetchTasks();
+   }
     }, [page])
 
     //2
@@ -77,6 +85,12 @@ export default function Home(){
 
 
         )
+
+    //9
+    const fetchCategories =async ()=>{
+        const fetchedCategories = await fetchCategories();
+        setCategories(fetchedCategories)
+    }
 
 
 	return (
