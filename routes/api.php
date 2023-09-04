@@ -17,9 +17,10 @@ Route::put('tasks/{id}',[TaskController::class,'update']);
 Route::get('tasks/{id}',[TaskController::class,'show']);
 Route::delete('tasks/{id}',[TaskController::class,'destroy']);
 
-Route::get('category/{category}/tasks',[TaskController::class,'getTaskByCategory']);
+Route::get('category/{category}/tasks',[TaskController::class,'getTasksByCategory']);
+
 
 Route::get('search/{term}/tasks',[TaskController::class,'getTaskByTerm']);
-Route::get('search/{column}/{direction}/tasks',[TaskController::class,'getTaskOrderBy']);
+Route::get('search/{column}/{direction}/tasks',[TaskController::class,'getTasksOrderedBy']);
 
-Route::get('category',[CategoryController::class,'index']);
+Route::get('categories',[CategoryController::class,'index']);
