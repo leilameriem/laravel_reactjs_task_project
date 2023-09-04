@@ -102,7 +102,7 @@ class TaskController extends Controller
         return ['message' => 'Your task has been deleted'];
     }
 
-    public function getTasksByCategory(Category $category){
+      public function getTasksByCategory(Category $category){
         return $category->tasks()->with("category")->paginate(2);
     }
 
