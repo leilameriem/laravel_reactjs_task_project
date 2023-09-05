@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import useCategories from '../../custom/useCategories';
+import {useDebounce} from 'use-debounce';
 
 
 
@@ -15,6 +16,10 @@ const [page, setPage] = useState(1);
 const [catdId, setCatId] = useState(null); 
 //12
 const [orderBy, setOrderBy] = useState(null); 
+//13 search
+const [searchTerm, setSearchTerm] = useState(''); 
+ // npm i use-debounce
+const debouncedSearchTerm= useDebounce(searchTerm,300);
 
 
 
@@ -28,7 +33,7 @@ fetchCategories();
 if(!tasks.length){
  fetchTasks();
 }
-}, [page,catdId,orderBy])
+}, [page,catdId,orderBy,debouncedSearchTerm[0]])
 
 //2
 const fetchTasks = async ()=>{
@@ -43,6 +48,11 @@ const fetchTasks = async ()=>{
         const response = await axios.get(`/api/search/${orderBy.column}/${orderBy.direction}/tasks?page=${page}`);
         setTasks(response.data);
         }
+        else if(debouncedSearchTerm[0]){
+        const response = await axios.get(`/api/search/${debouncedSearchTerm[0]}/tasks?page=${page}`);
+        setTasks(response.data);
+        }
+
         else{  
          const response = await axios.get(`/api/tasks?page=${page}`);
         //5 remplir list array tast
@@ -59,7 +69,7 @@ const fetchTasks = async ()=>{
     }
 
 }
-// 8
+// 8 
 
 const fetchPrevNextTasks=(link)=>{
 const url = new URL(link);
@@ -112,6 +122,31 @@ const fetchCategories  = async ()=>{
 
 return (
 <div className='row my-5'>
+  <div className="row my-3">
+  <div className="col-md-4">
+  <div className="form-group">
+ {/* 13 serche*/}
+  <input type="text"
+
+   className="form-control rounded-0 border-darck"
+
+   //important
+   value={searchTerm}
+   onChange={
+    (event)=>{
+        setCatId(null);
+        setOrderBy(null);
+        setPage(1);
+        setSearchTerm(event.target.value);
+    }
+   }
+   placeholder="search.."
+    />
+
+      
+  </div>
+  </div>
+  </div>
   <div className="col-md-9 card">
             <div className="card-body">
                 <table className="table">
@@ -188,13 +223,16 @@ return (
             <input name="category" className="form-check-input" 
                 onChange={() => {
                 setPage(1);
+                setOrderBy(null);
                 setCatId(null);
                 setCatId(event.target.value);
                         }}
                 type="radio"
                 value={category.id}
                 id={category.id} 
+                checked={catdId==category.id}
                 />
+
             <label className="form-check-label" htmlFor={category.id}>{category.name}</label>
         </div>
             ))}   
