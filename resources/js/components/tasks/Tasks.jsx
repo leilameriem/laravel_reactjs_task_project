@@ -173,6 +173,7 @@ return (
         <input name="category" className="form-check-input" 
              onChange={() => {
              setCatId(null);
+             setOrderBy(null);
              setPage(1);
              fetchTasks();
                     }}
@@ -187,6 +188,7 @@ return (
             <input name="category" className="form-check-input" 
                 onChange={() => {
                 setPage(1);
+                setCatId(null);
                 setCatId(event.target.value);
                         }}
                 type="radio"
@@ -223,6 +225,7 @@ return (
                 direction:event.target.value
              })
                     }}
+                    checked={orderBy &&  orderBy.column==='id' && orderBy.direction === 'asc' ? true :false}
              type="radio"/>
         <label className="form-check-label" htmlFor="id"><i className="fas fa-arrow-up"></i></label>
     </div>
@@ -240,12 +243,55 @@ return (
              });
                 }
                 }
+            checked={orderBy &&  orderBy.column==='id' && orderBy.direction === 'desc' ? true :false}
+
              type="radio"/>
         <label className="form-check-label" htmlFor="id"><i className="fas fa-arrow-down"></i></label>
     </div>
     </div> 
 </div>
+<hr/>
 
+
+<div className="card-body">
+    <div>
+        <h6>Oder by title</h6>
+        <div className="form-check">
+        <input name="title" className="form-check-input" 
+             value="asc"
+             onChange={(event) => {
+             setCatId(null);
+             setPage(1);
+             setOrderBy({
+                column:'title',
+                direction:event.target.value
+             })
+                    }}
+                    checked={orderBy &&  orderBy.column==='title' && orderBy.direction === 'asc' ? true :false}
+             type="radio"/>
+        <label className="form-check-label" htmlFor="title">A-Z</label>
+    </div>
+    </div>
+        <div>
+        
+        <div className="form-check">
+        <input name="title" className="form-check-input" 
+             value="desc"
+             onChange={(event) => {
+             setCatId(null);
+             setPage(1);
+             setOrderBy({
+                column:'title',direction:event.target.value
+             });
+                }
+                }
+            checked={orderBy &&  orderBy.column==='title' && orderBy.direction === 'desc' ? true :false}
+
+             type="radio"/>
+        <label className="form-check-label" htmlFor="id">Z-A</label>
+    </div>
+    </div> 
+</div>
 </div>
 
 </div>
