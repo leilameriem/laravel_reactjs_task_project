@@ -2,12 +2,13 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import useCategories from '../../custom/useCategories';
 import {useDebounce} from 'use-debounce';
+import Swal from 'sweetalert2';
 
 
 
 export default function Home(){
 
-//1
+//1 afficher task 
 const [tasks, setTasks] = useState([]); 
 const [categories, setCategories] = useState([]);
 //7
@@ -119,6 +120,44 @@ const fetchCategories  = async ()=>{
     setCategories(fetchedCategories);
 }
 
+//13
+
+  const deleteTask = (taskId) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                   
+         const respone = await axios.delete(`/api/tasks/${taskId}`);
+         console.log(respone);
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: respone.data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    fetchTasks();
+                } catch (error) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Something went wrong try later',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            }
+        });
+    }
+
 
 return (
 <div className='row my-5'>
@@ -177,7 +216,9 @@ return (
                                     </td>
                                     <td>{task.category.name}</td>
                                     <td>{task.created_at}</td>
-                                    <td className="d-flex">
+                                    <td >
+                                 <button onClick={() => deleteTask(task.id)} className="btn btn-sm btn-danger mx-1"><i className="fas fa-trash"></i></button>
+
                                     </td>
                                     
                                 </tr>
@@ -238,7 +279,7 @@ return (
             ))}   
   </div>
 
-
+ 
 
 </div>
 {/*12*/}
