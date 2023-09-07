@@ -20,7 +20,7 @@ Route::delete('tasks/{id}',[TaskController::class,'destroy']);
 Route::get('category/{category}/tasks',[TaskController::class,'getTasksByCategory']);
 
 
-Route::get('search/{term}/tasks',[TaskController::class,'getTaskByTerm']);
+Route::get('search/{term}/tasks',[TaskController::class,'getTasksByTerm']);
 Route::get('search/{column}/{direction}/tasks',[TaskController::class,'getTasksOrderedBy']);
 
 Route::get('categories',[CategoryController::class,'index']);

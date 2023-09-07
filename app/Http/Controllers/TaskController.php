@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Http\Requests\CreateTaskRequest;
 use App\Models\Category;
 use App\Models\Task;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskRequest $request)
+    public function store(CreateTaskRequest $request)
     {
         //
         $task = Task::create([
@@ -95,12 +96,12 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task)
+     public function destroy(Task $task)
     {
-        //
         $task->delete();
-        return ['message' => 'Your task has been deleted'];
+        return ['message'=>'Your task has been remove'];
     }
+
 
       public function getTasksByCategory(Category $category){
         return $category->tasks()->with("category")->paginate(2);

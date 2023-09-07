@@ -1,12 +1,14 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import useCategories from '../../custom/useCategories';
+import {useDebounce} from 'use-debounce';
+import Swal from 'sweetalert2';
 
 
 
 export default function Home(){
 
-//1
+//1 afficher task 
 const [tasks, setTasks] = useState([]); 
 const [categories, setCategories] = useState([]);
 //7
@@ -15,6 +17,10 @@ const [page, setPage] = useState(1);
 const [catdId, setCatId] = useState(null); 
 //12
 const [orderBy, setOrderBy] = useState(null); 
+//13 search
+const [searchTerm, setSearchTerm] = useState(''); 
+ // npm i use-debounce
+const debouncedSearchTerm= useDebounce(searchTerm,300);
 
 
 
@@ -28,7 +34,7 @@ fetchCategories();
 if(!tasks.length){
  fetchTasks();
 }
-}, [page,catdId,orderBy])
+}, [page,catdId,orderBy,debouncedSearchTerm[0]])
 
 //2
 const fetchTasks = async ()=>{
@@ -43,6 +49,11 @@ const fetchTasks = async ()=>{
         const response = await axios.get(`/api/search/${orderBy.column}/${orderBy.direction}/tasks?page=${page}`);
         setTasks(response.data);
         }
+        else if(debouncedSearchTerm[0]){
+        const response = await axios.get(`/api/search/${debouncedSearchTerm[0]}/tasks?page=${page}`);
+        setTasks(response.data);
+        }
+
         else{  
          const response = await axios.get(`/api/tasks?page=${page}`);
         //5 remplir list array tast
@@ -59,7 +70,7 @@ const fetchTasks = async ()=>{
     }
 
 }
-// 8
+// 8 
 
 const fetchPrevNextTasks=(link)=>{
 const url = new URL(link);
@@ -109,9 +120,72 @@ const fetchCategories  = async ()=>{
     setCategories(fetchedCategories);
 }
 
+//13
+
+  const deleteTask = (taskId) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                   
+         const respone = await axios.delete(`/api/tasks/${taskId}`);
+         console.log(respone);
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: respone.data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    fetchTasks();
+                } catch (error) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Something went wrong try later',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            }
+        });
+    }
+
 
 return (
 <div className='row my-5'>
+  <div className="row my-3">
+  <div className="col-md-4">
+  <div className="form-group">
+ {/* 13 serche*/}
+  <input type="text"
+
+   className="form-control rounded-0 border-darck"
+
+   //important
+   value={searchTerm}
+   onChange={
+    (event)=>{
+        setCatId(null);
+        setOrderBy(null);
+        setPage(1);
+        setSearchTerm(event.target.value);
+    }
+   }
+   placeholder="search.."
+    />
+
+      
+  </div>
+  </div>
+  </div>
   <div className="col-md-9 card">
             <div className="card-body">
                 <table className="table">
@@ -142,7 +216,9 @@ return (
                                     </td>
                                     <td>{task.category.name}</td>
                                     <td>{task.created_at}</td>
-                                    <td className="d-flex">
+                                    <td >
+                                 <button onClick={() => deleteTask(task.id)} className="btn btn-sm btn-danger mx-1"><i className="fas fa-trash"></i></button>
+
                                     </td>
                                     
                                 </tr>
@@ -188,19 +264,22 @@ return (
             <input name="category" className="form-check-input" 
                 onChange={() => {
                 setPage(1);
+                setOrderBy(null);
                 setCatId(null);
                 setCatId(event.target.value);
                         }}
                 type="radio"
                 value={category.id}
                 id={category.id} 
+                checked={catdId==category.id}
                 />
+
             <label className="form-check-label" htmlFor={category.id}>{category.name}</label>
         </div>
             ))}   
   </div>
 
-
+ 
 
 </div>
 {/*12*/}
